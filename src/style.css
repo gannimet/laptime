@@ -1,0 +1,15 @@
+body {
+  padding: 0;
+  margin: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  width: 100vw;
+}
+
+#laptimeCanvas {
+  height: 90vmin;
+  aspect-ratio: 1920/1080;
+  background-color: #fff;
+}

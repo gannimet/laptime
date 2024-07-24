@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0" y="0" width="1920" height="1080" viewBox="0, 0, 1920, 1080">
+  <g id="Background">
+    <rect x="0" y="0" width="1920" height="1080" fill="#000000" fill-opacity="0"/>
+  </g>
+  <defs>
+    <linearGradient id="Gradient_1" gradientUnits="userSpaceOnUse" x1="907.759" y1="972.5" x2="258.24" y2="757.5">
+      <stop offset="0" stop-color="#E00859"/>
+      <stop offset="1" stop-color="#851414"/>
+    </linearGradient>
+    <linearGradient id="Gradient_2" gradientUnits="userSpaceOnUse" x1="-1008.24" y1="972.5" x2="-1657.76" y2="757.5" gradientTransform="matrix(-1, 0, 0, 1, 0, 0)">
+      <stop offset="0" stop-color="#E00859"/>
+      <stop offset="1" stop-color="#851414"/>
+    </linearGradient>
+  </defs>
+  <g id="Suspension">
+    <g>
+      <path d="M825.5,690.5 L646.75,739.25" fill-opacity="0" stroke="#404040" stroke-width="6"/>
+      <path d="M801.125,788 L646.75,739.25" fill-opacity="0" stroke="#404040" stroke-width="6"/>
+      <path d="M630.5,771.75 L825.5,690.5" fill-opacity="0" stroke="#404040" stroke-width="6"/>
+      <path d="M801.125,820.5 L630.5,771.75" fill-opacity="0" stroke="#404040" stroke-width="6"/>
+      <path d="M825.5,739.25 L630.5,771.75" fill-opacity="0" stroke="#404040" stroke-width="6"/>
+      <path d="M776.75,820.5 L646.75,739.25" fill-opacity="0" stroke="#404040" stroke-width="6"/>
+    </g>
+    <g>
+      <path d="M1090.5,690.5 L1269.25,739.25" fill-opacity="0" stroke="#404040" stroke-width="6"/>
+      <path d="M1114.875,788 L1269.25,739.25" fill-opacity="0" stroke="#404040" stroke-width="6"/>
+      <path d="M1285.5,771.75 L1090.5,690.5" fill-opacity="0" stroke="#404040" stroke-width="6"/>
+      <path d="M1114.875,820.5 L1285.5,771.75" fill-opacity="0" stroke="#404040" stroke-width="6"/>
+      <path d="M1090.5,739.25 L1285.5,771.75" fill-opacity="0" stroke="#404040" stroke-width="6"/>
+      <path d="M1139.25,820.5 L1269.25,739.25" fill-opacity="0" stroke="#404040" stroke-width="6"/>
+    </g>
+  </g>
+  <g id="Base">
+    <path d="M208,1080 C208,1080 280,990 310,980 C340,970 518,950 539,950 C560,950 638,930 649,920 C660,910 729,850 729,850 C729,850 816,671.5 833,660.75 C850,650 874.667,650 874.667,650 L958,650 L958,1080 L208,1080 z" fill="url(#Gradient_1)"/>
+    <path d="M1708,1080 C1708,1080 1636,990 1606,980 C1576,970 1398,950 1377,950 C1356,950 1278,930 1267,920 C1256,910 1187,850 1187,850 C1187,850 1100,671.5 1083,660.75 C1066,650 1041.333,650 1041.333,650 L958,650 L958,1080 L1708,1080 z" fill="url(#Gradient_2)"/>
+  </g>
+  <g id="Cockpit">
+    <path d="M713.945,1080 L754.87,941.333 L795.796,920 L1123.204,920 L1164.13,941.333 L1205.056,1080 z" fill="#1F1F1F"/>
+  </g>
+</svg>
