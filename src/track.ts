@@ -1,20 +1,20 @@
-import { WorldPoint } from "./world";
+import { Vector } from "./world";
 
 export type Track = {
-  path: WorldPoint[];
-  start: WorldPoint;
+  path: Vector[];
+  start: Vector;
 };
 
 export const demoTrack: Track = {
   path: [
-    new WorldPoint(30, 40),
-    new WorldPoint(30, 40),
-    new WorldPoint(30, 290),
-    new WorldPoint(40, 310),
-    new WorldPoint(60, 320),
-    new WorldPoint(100, 320),
-    new WorldPoint(110, 330),
-    new WorldPoint(30, 40),
+    new Vector(30, 40),
+    new Vector(30, 40),
+    new Vector(30, 290),
+    new Vector(40, 310),
+    new Vector(60, 320),
+    new Vector(100, 320),
+    new Vector(110, 330),
+    new Vector(30, 40),
   ],
-  start: new WorldPoint(30, 100),
+  start: new Vector(30, 100),
 };

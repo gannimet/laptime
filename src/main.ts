@@ -2,28 +2,50 @@ import { deg2Rad } from './math';
 import './style.css'
 import { demoTrack } from './track';
 import { ON_BOARD_VIEW_CONFIG } from './view-constants';
-import { WorldPoint } from './world';
+import { Vector } from './world';
 
 const canvas = document.querySelector<HTMLCanvasElement>('#laptimeCanvas');
 const ctx = canvas?.getContext("2d");
 const onboardCarImage = new Image();
-const track = demoTrack;
-const { cameraAngularFieldOfViewVertical, cameraFocalLength, cameraElevation } = ON_BOARD_VIEW_CONFIG;
-const fieldOfViewRad = deg2Rad(cameraAngularFieldOfViewVertical);
-const sensorWidth =
-  (cameraFocalLength * Math.sin(fieldOfViewRad)) /
-  (Math.sin((Math.PI - fieldOfViewRad) / 2));
-const sensorHeight = ((canvas?.height ?? 1080) * sensorWidth) / (canvas?.width ?? 1920)
-const cameraPosition = new WorldPoint(0, 0, cameraElevation);
 
-function renderPoint(ctx: CanvasRenderingContext2D, pointToRender: WorldPoint, color: string) {
-  const { x: dx, y: dy, z: dz } = cameraPosition.deltaTo(pointToRender);
-  const sensorXOffset = -(dx * cameraFocalLength) / Math.abs(dy);
-  const sensorYOffset = -(dz * cameraFocalLength) / dy;
-  const projectionXOffset = sensorXOffset * ctx.canvas.width / sensorWidth;
-  const projectionYOffset = sensorYOffset * ctx.canvas.height / sensorHeight;
-  const projectionX = (ctx.canvas.width / 2) + projectionXOffset;
-  const projectionY = (ctx.canvas.height / 2) + projectionYOffset;
+const { cameraElevation, cameraTiltDownAngle, cameraAngularFieldOfViewHorizontal } = ON_BOARD_VIEW_CONFIG;
+const cameraPosition = new Vector(0, 0, cameraElevation);
+const cameraTiltDownAngleRad = -deg2Rad(cameraTiltDownAngle);
+const cameraVector = new Vector(0, Math.cos(cameraTiltDownAngleRad), Math.sin(cameraTiltDownAngleRad));
+
+function renderPoint(ctx: CanvasRenderingContext2D, pointToRender: Vector, color: string) {
+  const cameraToPointVector = pointToRender.deltaTo(cameraPosition);
+
+  const rhoH = Math.acos(
+    (cameraVector.x * cameraToPointVector.x + cameraVector.y * cameraToPointVector.y) /
+    (Math.sqrt(cameraVector.x * cameraVector.x + cameraVector.y * cameraVector.y) * Math.sqrt(cameraToPointVector.x * cameraToPointVector.x + cameraToPointVector.y * cameraToPointVector.y))
+  );
+
+  const rhoV = Math.acos(
+    (cameraVector.y * cameraToPointVector.y + cameraVector.z * cameraToPointVector.z) /
+    (Math.sqrt(cameraVector.y * cameraVector.y + cameraVector.z * cameraVector.z) * Math.sqrt(cameraToPointVector.y * cameraToPointVector.y + cameraToPointVector.z * cameraToPointVector.z))
+  );
+
+  const fowHalf = deg2Rad(cameraAngularFieldOfViewHorizontal >> 1);
+  const d_h = cameraPosition.distanceTo(pointToRender, ['x', 'y']);
+  const d_v = cameraPosition.distanceTo(pointToRender, ['y', 'z']);
+  const b_h = Math.cos(rhoH) * d_h;
+  const b_v = Math.cos(rhoV) * d_v;
+
+  const A_h_p = Math.sin(rhoH) * d_h;
+  const A_v_p = Math.sin(rhoV) * d_v;
+  const A_h_max = Math.tan(fowHalf) * b_h;
+  const A_v_max = Math.tan(fowHalf) * b_v;
+  const ratioH = A_h_p / A_h_max;
+  const ratioV = A_v_p / A_v_max;
+
+  const signH = Math.sign(A_h_p);
+  const signV = Math.sign(A_v_p);
+  const halfCanvasWidth = ctx.canvas.width >> 1;
+  const halfCanvasHeight = ctx.canvas.height >> 1;
+  const projectionX = halfCanvasWidth + signH * ratioH * halfCanvasWidth;
+  const projectionY = halfCanvasHeight - signV * ratioV * halfCanvasWidth;
+
   ctx.fillStyle = color;
   ctx.fillRect(projectionX - 4, projectionY - 4, 8, 8);
 }
@@ -46,10 +68,17 @@ function draw(time: number) {
   ctx.drawImage(onboardCarImage, carX, carY);
 
   // View on track
-  renderPoint(ctx, new WorldPoint(0, 5), 'white');
-  renderPoint(ctx, new WorldPoint(0, 20), 'red');
-  renderPoint(ctx, new WorldPoint(15, 60), 'orange');
-  renderPoint(ctx, new WorldPoint(20, 100), 'yellow');
+  renderPoint(ctx, new Vector(-10, 6), 'red');
+  // renderPoint(ctx, new WorldPoint(0, 6), 'red');
+  // renderPoint(ctx, new WorldPoint(10, 6), 'red');
+
+  // renderPoint(ctx, new WorldPoint(-10, 10), 'lime');
+  // renderPoint(ctx, new WorldPoint(0, 10), 'lime');
+  // renderPoint(ctx, new WorldPoint(10, 10), 'lime');
+
+  // renderPoint(ctx, new WorldPoint(-10, 15), 'yellow');
+  // renderPoint(ctx, new WorldPoint(0, 15), 'yellow');
+  // renderPoint(ctx, new WorldPoint(10, 15), 'yellow');
 }
 
 function run() {

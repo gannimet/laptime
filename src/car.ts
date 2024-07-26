@@ -1,4 +1,4 @@
-import { WorldPoint } from "./world";
+import { Vector } from "./world";
 
 export class Car {
   x = 0;

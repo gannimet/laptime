@@ -6,15 +6,11 @@ export const ON_BOARD_VIEW_CONFIG = {
   /**
    * Degrees
    */
-  cameraAngularFieldOfViewVertical: 120,
+  cameraAngularFieldOfViewHorizontal: 120,
   /**
    * Meters
    */
   cameraElevation: 1,
-  /**
-   * Meters
-   */
-  cameraFocalLength: 0.006,
   /**
    * Meters
    */
