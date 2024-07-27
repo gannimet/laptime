@@ -14,12 +14,15 @@ const cameraTiltDownAngleRad = -deg2Rad(cameraTiltDownAngle);
 const cameraVector = new Vector(0, Math.cos(cameraTiltDownAngleRad), Math.sin(cameraTiltDownAngleRad));
 
 function renderPoint(ctx: CanvasRenderingContext2D, pointToRender: Vector, color: string) {
-  const cameraToPointVector = pointToRender.deltaTo(cameraPosition);
+  const cameraToPointVector = cameraPosition.deltaTo(pointToRender);
 
-  const rhoH = Math.acos(
-    (cameraVector.x * cameraToPointVector.x + cameraVector.y * cameraToPointVector.y) /
-    (Math.sqrt(cameraVector.x * cameraVector.x + cameraVector.y * cameraVector.y) * Math.sqrt(cameraToPointVector.x * cameraToPointVector.x + cameraToPointVector.y * cameraToPointVector.y))
-  );
+  const rhoH = cameraVector.horizontalAngleTo(cameraToPointVector);
+  // const rhoV = cameraVector.verticalAngleTo(cameraToPointVector);
+
+  // const rhoH = Math.acos(
+  //   (cameraVector.x * cameraToPointVector.x + cameraVector.y * cameraToPointVector.y) /
+  //   (Math.sqrt(cameraVector.x * cameraVector.x + cameraVector.y * cameraVector.y) * Math.sqrt(cameraToPointVector.x * cameraToPointVector.x + cameraToPointVector.y * cameraToPointVector.y))
+  // );
 
   const rhoV = Math.acos(
     (cameraVector.y * cameraToPointVector.y + cameraVector.z * cameraToPointVector.z) /
@@ -39,11 +42,10 @@ function renderPoint(ctx: CanvasRenderingContext2D, pointToRender: Vector, color
   const ratioH = A_h_p / A_h_max;
   const ratioV = A_v_p / A_v_max;
 
-  const signH = Math.sign(A_h_p);
   const signV = Math.sign(A_v_p);
   const halfCanvasWidth = ctx.canvas.width >> 1;
   const halfCanvasHeight = ctx.canvas.height >> 1;
-  const projectionX = halfCanvasWidth + signH * ratioH * halfCanvasWidth;
+  const projectionX = halfCanvasWidth + ratioH * halfCanvasWidth;
   const projectionY = halfCanvasHeight - signV * ratioV * halfCanvasWidth;
 
   ctx.fillStyle = color;
@@ -59,7 +61,7 @@ function draw(time: number) {
 
   // Sky
   // ctx.fillStyle = '#aaddff'
-  ctx.fillStyle = '#00f';
+  ctx.fillStyle = '#eee';
   ctx.fillRect(0, 0, canvas.width, canvas.height);
 
   // Car
@@ -69,16 +71,16 @@ function draw(time: number) {
 
   // View on track
   renderPoint(ctx, new Vector(-10, 6), 'red');
-  // renderPoint(ctx, new WorldPoint(0, 6), 'red');
-  // renderPoint(ctx, new WorldPoint(10, 6), 'red');
+  renderPoint(ctx, new Vector(0, 6), 'red');
+  renderPoint(ctx, new Vector(10, 6), 'red');
 
-  // renderPoint(ctx, new WorldPoint(-10, 10), 'lime');
-  // renderPoint(ctx, new WorldPoint(0, 10), 'lime');
-  // renderPoint(ctx, new WorldPoint(10, 10), 'lime');
+  renderPoint(ctx, new Vector(-10, 10), 'orange');
+  renderPoint(ctx, new Vector(0, 10), 'orange');
+  renderPoint(ctx, new Vector(10, 10), 'orange');
 
-  // renderPoint(ctx, new WorldPoint(-10, 15), 'yellow');
-  // renderPoint(ctx, new WorldPoint(0, 15), 'yellow');
-  // renderPoint(ctx, new WorldPoint(10, 15), 'yellow');
+  renderPoint(ctx, new Vector(-10, 15), 'purple');
+  renderPoint(ctx, new Vector(0, 15), 'purple');
+  renderPoint(ctx, new Vector(10, 15), 'purple');
 }
 
 function run() {

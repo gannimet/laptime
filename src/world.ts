@@ -4,7 +4,7 @@ export class Vector {
   constructor(readonly x: number, readonly y: number, readonly z: number = 0) {}
 
   deltaTo(other: Vector): Vector {
-    return new Vector(this.x - other.x, this.y - other.y, this.z - other.z);
+    return new Vector(other.x - this.x, other.y - this.y, other.z - this.z);
   }
 
   distanceTo(other: Vector, includeAxes: Axis[] = ['x', 'y', 'z']) {
@@ -17,15 +17,32 @@ export class Vector {
     return Math.sqrt(sum)
   }
 
+  crossProduct(other: Vector) {
+    return new Vector(
+      this.y * other.z - this.z * other.y,
+      this.z * other.x - this.x * other.z,
+      this.x * other.y - this.y * other.x,
+    );
+  }
+
+  get length() {
+    return Math.sqrt(this.x * this.x + this.y * this.y + this.z * this.z);
+  }
+
   horizontalAngleTo(other: Vector) {
-    return Math.atan(this.x / this.y) - Math.atan(other.x - other.y);
+    // For horizontal angle we set the z component of both vectors to 0
+    const referenceVector = new Vector(this.x, this.y, 0);
+    const targetVector = new Vector(other.x, other.y, 0);
+    const crossProduct = referenceVector.crossProduct(targetVector);
+    const angleDirection = -Math.sign(crossProduct.z);
+    const angle = Math.asin(
+      crossProduct.length / (referenceVector.length * targetVector.length)
+    );
+
+    return angleDirection * angle;
   }
 
   verticalAngleTo(other: Vector) {
     return Math.atan(this.z / this.y) - Math.atan(other.z - other.y);
   }
 };
-
-export class Polygon {
-  constructor(readonly corners: Vector[]) {}
-}
