@@ -17,17 +17,7 @@ function renderPoint(ctx: CanvasRenderingContext2D, pointToRender: Vector, color
   const cameraToPointVector = cameraPosition.deltaTo(pointToRender);
 
   const rhoH = cameraVector.horizontalAngleTo(cameraToPointVector);
-  // const rhoV = cameraVector.verticalAngleTo(cameraToPointVector);
-
-  // const rhoH = Math.acos(
-  //   (cameraVector.x * cameraToPointVector.x + cameraVector.y * cameraToPointVector.y) /
-  //   (Math.sqrt(cameraVector.x * cameraVector.x + cameraVector.y * cameraVector.y) * Math.sqrt(cameraToPointVector.x * cameraToPointVector.x + cameraToPointVector.y * cameraToPointVector.y))
-  // );
-
-  const rhoV = Math.acos(
-    (cameraVector.y * cameraToPointVector.y + cameraVector.z * cameraToPointVector.z) /
-    (Math.sqrt(cameraVector.y * cameraVector.y + cameraVector.z * cameraVector.z) * Math.sqrt(cameraToPointVector.y * cameraToPointVector.y + cameraToPointVector.z * cameraToPointVector.z))
-  );
+  const rhoV = cameraVector.verticalAngleTo(cameraToPointVector);
 
   const fowHalf = deg2Rad(cameraAngularFieldOfViewHorizontal >> 1);
   const d_h = cameraPosition.distanceTo(pointToRender, ['x', 'y']);
@@ -42,11 +32,10 @@ function renderPoint(ctx: CanvasRenderingContext2D, pointToRender: Vector, color
   const ratioH = A_h_p / A_h_max;
   const ratioV = A_v_p / A_v_max;
 
-  const signV = Math.sign(A_v_p);
   const halfCanvasWidth = ctx.canvas.width >> 1;
   const halfCanvasHeight = ctx.canvas.height >> 1;
   const projectionX = halfCanvasWidth + ratioH * halfCanvasWidth;
-  const projectionY = halfCanvasHeight - signV * ratioV * halfCanvasWidth;
+  const projectionY = halfCanvasHeight + ratioV * halfCanvasWidth;
 
   ctx.fillStyle = color;
   ctx.fillRect(projectionX - 4, projectionY - 4, 8, 8);
@@ -61,7 +50,7 @@ function draw(time: number) {
 
   // Sky
   // ctx.fillStyle = '#aaddff'
-  ctx.fillStyle = '#eee';
+  ctx.fillStyle = '#fff';
   ctx.fillRect(0, 0, canvas.width, canvas.height);
 
   // Car

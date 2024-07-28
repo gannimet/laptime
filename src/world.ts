@@ -43,6 +43,15 @@ export class Vector {
   }
 
   verticalAngleTo(other: Vector) {
-    return Math.atan(this.z / this.y) - Math.atan(other.z - other.y);
+    // For vertical angle we set the x component of both vectors to 0
+    const referenceVector = new Vector(0, this.y, this.z);
+    const targetVector = new Vector(0, other.y, other.z);
+    const crossProduct = referenceVector.crossProduct(targetVector);
+    const angleDirection = -Math.sign(crossProduct.x);
+    const angle = Math.asin(
+      crossProduct.length / (referenceVector.length * targetVector.length)
+    );
+
+    return angleDirection * angle;
   }
 };
