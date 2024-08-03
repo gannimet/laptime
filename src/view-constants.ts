@@ -2,7 +2,7 @@ export const ON_BOARD_VIEW_CONFIG = {
   /**
    * Degrees
    */
-  cameraTiltDownAngle: 10,
+  cameraTiltDownAngle: 2,
   /**
    * Degrees
    */

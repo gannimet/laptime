@@ -1,4 +1,4 @@
-import { Vector } from "./world";
+import { Vector } from "./vector";
 
 export type Track = {
   path: Vector[];

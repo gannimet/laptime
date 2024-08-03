@@ -1,50 +1,56 @@
-import { deg2Rad } from './math';
+import { setKeyPressed, setKeyUnpressed, updateState } from './state';
 import './style.css'
-import { demoTrack } from './track';
-import { ON_BOARD_VIEW_CONFIG } from './view-constants';
-import { Vector } from './world';
+import { Vector } from './vector';
+import { Graphics } from './graphics';
 
 const canvas = document.querySelector<HTMLCanvasElement>('#laptimeCanvas');
 const ctx = canvas?.getContext("2d");
 const onboardCarImage = new Image();
 
-const { cameraElevation, cameraTiltDownAngle, cameraAngularFieldOfViewHorizontal } = ON_BOARD_VIEW_CONFIG;
-const cameraPosition = new Vector(0, 0, cameraElevation);
-const cameraTiltDownAngleRad = -deg2Rad(cameraTiltDownAngle);
-const cameraVector = new Vector(0, Math.cos(cameraTiltDownAngleRad), Math.sin(cameraTiltDownAngleRad));
+let graphics: Graphics;
 
-function renderPoint(ctx: CanvasRenderingContext2D, pointToRender: Vector, color: string) {
-  const cameraToPointVector = cameraPosition.deltaTo(pointToRender);
+function renderCurve() {
+  graphics.renderPoint(new Vector(0, 1), 'red');
+  graphics.renderPoint(new Vector(0, 2, 0), 'red');
+  graphics.renderPoint(new Vector(0, 3, 0.2), 'red');
+  graphics.renderPoint(new Vector(0, 4, 0.1), 'red');
+  graphics.renderPoint(new Vector(0, 5), 'red');
+  graphics.renderPoint(new Vector(0, 6), 'red');
+  graphics.renderPoint(new Vector(0, 7), 'red');
+  graphics.renderPoint(new Vector(0.1, 7.5), 'red');
+  graphics.renderPoint(new Vector(0.25, 8), 'red');
+  graphics.renderPoint(new Vector(0.5, 8.5), 'red');
+  graphics.renderPoint(new Vector(1, 9), 'red');
+  graphics.renderPoint(new Vector(1.5, 9.5), 'red');
+  graphics.renderPoint(new Vector(2, 9.75), 'red');
+  graphics.renderPoint(new Vector(2.5, 9.8), 'red');
+  graphics.renderPoint(new Vector(3, 9.9), 'red');
+  graphics.renderPoint(new Vector(3.5, 10), 'red');
+  graphics.renderPoint(new Vector(4, 10), 'red');
+  graphics.renderPoint(new Vector(5, 10), 'red');
+  graphics.renderPoint(new Vector(6, 10), 'red');
+}
 
-  const rhoH = cameraVector.horizontalAngleTo(cameraToPointVector);
-  const rhoV = cameraVector.verticalAngleTo(cameraToPointVector);
+function renderHouse() {
+  graphics.renderPoint(new Vector(4, 16, 0), 'red');
+  graphics.renderPoint(new Vector(8, 16, 0), 'red');
+  graphics.renderPoint(new Vector(4, 16, 4), 'red');
+  graphics.renderPoint(new Vector(8, 16, 4), 'red');
+  graphics.renderPoint(new Vector(6, 16, 6), 'red');
 
-  const fowHalf = deg2Rad(cameraAngularFieldOfViewHorizontal >> 1);
-  const d_h = cameraPosition.distanceTo(pointToRender, ['x', 'y']);
-  const d_v = cameraPosition.distanceTo(pointToRender, ['y', 'z']);
-  const b_h = Math.cos(rhoH) * d_h;
-  const b_v = Math.cos(rhoV) * d_v;
-
-  const A_h_p = Math.sin(rhoH) * d_h;
-  const A_v_p = Math.sin(rhoV) * d_v;
-  const A_h_max = Math.tan(fowHalf) * b_h;
-  const A_v_max = Math.tan(fowHalf) * b_v;
-  const ratioH = A_h_p / A_h_max;
-  const ratioV = A_v_p / A_v_max;
-
-  const halfCanvasWidth = ctx.canvas.width >> 1;
-  const halfCanvasHeight = ctx.canvas.height >> 1;
-  const projectionX = halfCanvasWidth + ratioH * halfCanvasWidth;
-  const projectionY = halfCanvasHeight + ratioV * halfCanvasWidth;
-
-  ctx.fillStyle = color;
-  ctx.fillRect(projectionX - 4, projectionY - 4, 8, 8);
+  graphics.renderPoint(new Vector(4, 20, 0), 'red');
+  graphics.renderPoint(new Vector(8, 20, 0), 'red');
+  graphics.renderPoint(new Vector(4, 20, 4), 'red');
+  graphics.renderPoint(new Vector(8, 20, 4), 'red');
+  graphics.renderPoint(new Vector(6, 20, 6), 'red');
 }
 
 function draw(time: number) {
   if (!ctx || !canvas) {
     return;
   }
+
+  updateState();
   
   ctx.clearRect(0, 0, canvas.width, canvas.height)
 
@@ -59,21 +65,18 @@ function draw(time: number) {
   ctx.drawImage(onboardCarImage, carX, carY);
 
   // View on track
-  renderPoint(ctx, new Vector(-10, 6), 'red');
-  renderPoint(ctx, new Vector(0, 6), 'red');
-  renderPoint(ctx, new Vector(10, 6), 'red');
+  renderHouse();
 
-  renderPoint(ctx, new Vector(-10, 10), 'orange');
-  renderPoint(ctx, new Vector(0, 10), 'orange');
-  renderPoint(ctx, new Vector(10, 10), 'orange');
-
-  renderPoint(ctx, new Vector(-10, 15), 'purple');
-  renderPoint(ctx, new Vector(0, 15), 'purple');
-  renderPoint(ctx, new Vector(10, 15), 'purple');
+  // renderPoint(ctx, new Vector(2, 4), 'red');
+  // renderPoint(ctx, new Vector(-2, 4), 'red');
 }
 
 function run() {
   let lastTime = 0;
+
+  if (ctx) {
+    graphics = new Graphics(ctx);
+  }
 
   function loop(time: number) {
     const dt = time - lastTime;
@@ -92,4 +95,7 @@ window.addEventListener('load', () => {
   };
 
   onboardCarImage.src = 'onboard-car_green.svg';
-})
+});
+
+window.addEventListener('keydown', setKeyPressed);
+window.addEventListener('keyup', setKeyUnpressed);
