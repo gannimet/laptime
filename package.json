@@ -11,5 +11,9 @@
   "devDependencies": {
     "typescript": "^5.2.2",
     "vite": "^5.3.4"
+  },
+  "dependencies": {
+    "eslint": "^9.8.0",
+    "prettier": "^3.3.3"
   }
 }
