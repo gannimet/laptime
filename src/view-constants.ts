@@ -2,7 +2,7 @@ export const ON_BOARD_VIEW_CONFIG = {
   /**
    * Degrees
    */
-  cameraTiltDownAngle: 0,
+  cameraTiltDownAngle: 3,
   /**
    * Degrees
    */
@@ -10,7 +10,7 @@ export const ON_BOARD_VIEW_CONFIG = {
   /**
    * Meters
    */
-  cameraElevation: 0,
+  cameraElevation: 1,
   /**
    * Meters
    */

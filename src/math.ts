@@ -17,7 +17,7 @@ export function deg2Rad(angleDeg: number) {
 }
 
 export function rad2Deg(angleRad: number) {
-  return (360 * angleRad) / (2 * Math.PI);
+  return (180 * angleRad) / Math.PI;
 }
 
 export function calculateProjectionForPoint(
@@ -29,17 +29,32 @@ export function calculateProjectionForPoint(
   const { cameraVector, carPosition } = gameState;
   const cameraToPointVector = carPosition.deltaTo(pointToRender);
 
-  const rhoH = cameraVector.horizontalAngleTo(cameraToPointVector);
-  const rhoV = cameraVector.verticalAngleTo(cameraToPointVector);
+  const fovHalf = deg2Rad(cameraAngularFieldOfViewHorizontal / 2);
+  const f = 1 / Math.tan(fovHalf);
+  const d_h = carPosition.horizontalDistanceTo(pointToRender);
+  const d_v = carPosition.verticalDistanceTo(pointToRender);
+  const theta_h = cameraVector.horizontalAngleTo(cameraToPointVector);
 
-  const fowHalf = deg2Rad(cameraAngularFieldOfViewHorizontal >> 1);
+  if (Math.abs(theta_h) > fovHalf) {
+    return;
+  }
 
-  const ratioH = Math.tan(rhoH / fowHalf);
-  const ratioV = Math.tan(rhoV / fowHalf);
-  const halfCanvasWidth = canvas.width >> 1;
-  const halfCanvasHeight = canvas.height >> 1;
-  const projectionX = halfCanvasWidth + ratioH * halfCanvasWidth;
-  const projectionY = halfCanvasHeight + ratioV * halfCanvasWidth;
+  const theta_v = cameraVector.verticalAngleTo(cameraToPointVector);
+
+  if (Math.abs(theta_v) > fovHalf) {
+    return;
+  }
+
+  const a_h = d_h * Math.sin(theta_h);
+  const a_v = d_v * Math.sin(theta_v);
+  const b_h = Math.sqrt(Math.pow(d_h, 2) - Math.pow(a_h, 2));
+  const b_v = Math.sqrt(Math.pow(d_v, 2) - Math.pow(a_v, 2));
+  const p_h = (f * a_h) / b_h;
+  const p_v = (f * a_v) / b_v;
+  const halfCanvasWidth = canvas.width / 2;
+  const halfCanvasHeight = canvas.height / 2;
+  const projectionX = halfCanvasWidth + p_h * halfCanvasWidth;
+  const projectionY = halfCanvasHeight + p_v * halfCanvasWidth;
 
   return {
     x: projectionX,

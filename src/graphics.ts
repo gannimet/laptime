@@ -21,11 +21,13 @@ export class Graphics {
       this.canvas,
     );
 
-    this.ctx.strokeStyle = color;
-    this.ctx.beginPath();
-    this.ctx.moveTo(projectionFromPoint.x, projectionFromPoint.y);
-    this.ctx.lineTo(projectionToPoint.x, projectionToPoint.y);
-    this.ctx.stroke();
+    if (projectionFromPoint && projectionToPoint) {
+      this.ctx.strokeStyle = color;
+      this.ctx.beginPath();
+      this.ctx.moveTo(projectionFromPoint.x, projectionFromPoint.y);
+      this.ctx.lineTo(projectionToPoint.x, projectionToPoint.y);
+      this.ctx.stroke();
+    }
   }
 
   renderPoint(pointToRender: Vector, color: string) {
@@ -34,6 +36,10 @@ export class Graphics {
       currentState,
       this.canvas,
     );
+
+    if (!projectionPoint) {
+      return;
+    }
 
     this.ctx.fillStyle = color;
     this.ctx.fillRect(projectionPoint.x - 4, projectionPoint.y - 4, 8, 8);
