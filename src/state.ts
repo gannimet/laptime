@@ -18,11 +18,11 @@ const cameraTiltDownAngleRad = -deg2Rad(cameraTiltDownAngle);
 //   Math.cos(cameraTiltDownAngleRad),
 //   Math.sin(cameraTiltDownAngleRad),
 // );
-const rotationAngleRad = deg2Rad(-70);
+const rotationAngleRad = deg2Rad(0);
 const cameraVector = new Vector(
   -Math.sin(rotationAngleRad) * Math.cos(cameraTiltDownAngleRad),
   Math.cos(rotationAngleRad) * Math.cos(cameraTiltDownAngleRad),
-  -Math.sin(cameraTiltDownAngleRad),
+  Math.sin(cameraTiltDownAngleRad),
 );
 
 export type GameState = {

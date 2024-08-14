@@ -1,6 +1,6 @@
-import { deg2Rad } from "./math";
+import { deg2Rad } from './math';
 
-export type Axis = "x" | "y" | "z";
+export type Axis = 'x' | 'y' | 'z';
 
 export class Vector {
   constructor(
@@ -18,15 +18,11 @@ export class Vector {
   }
 
   horizontalDistanceTo(other: Vector) {
-    return Math.sqrt(
-      Math.pow(other.x - this.x, 2) + Math.pow(other.y - this.y, 2),
-    );
+    return Math.sqrt(Math.pow(other.x - this.x, 2) + Math.pow(other.y - this.y, 2));
   }
 
   verticalDistanceTo(other: Vector) {
-    return Math.sqrt(
-      Math.pow(other.z - this.z, 2) + Math.pow(other.y - this.y, 2),
-    );
+    return Math.sqrt(Math.pow(other.z - this.z, 2) + Math.pow(other.y - this.y, 2));
   }
 
   crossProduct(other: Vector) {
@@ -45,26 +41,36 @@ export class Vector {
     return Math.sqrt(this.x * this.x + this.y * this.y + this.z * this.z);
   }
 
+  get verticalAngle() {
+    // Normal vector of xy plane
+    const normalVector = new Vector(0, 0, -1);
+    // Set x to zero to "unskew" and make points with same x appear parallel
+    const verticallyReducedVector = new Vector(0, this.y, this.z);
+    const dotProduct = verticallyReducedVector.dotProduct(normalVector);
+
+    return Math.asin(dotProduct / verticallyReducedVector.length);
+  }
+
   horizontalAngleTo(other: Vector) {
     // For horizontal angle we set the z component of both vectors to 0
     const referenceVector = new Vector(this.x, this.y, 0);
     const targetVector = new Vector(other.x, other.y, 0);
     const dotProduct = referenceVector.dotProduct(targetVector);
-    const determinant =
-      targetVector.x * referenceVector.y - targetVector.y * referenceVector.x;
+    const determinant = targetVector.x * referenceVector.y - targetVector.y * referenceVector.x;
 
     return Math.atan2(determinant, dotProduct);
   }
 
+  /**
+   * @deprecated
+   */
   verticalAngleTo(other: Vector) {
     // For vertical angle we set the x component of both vectors to 0
     const referenceVector = new Vector(0, this.y, this.z);
     const targetVector = new Vector(0, other.y, other.z);
     const dotProduct = referenceVector.dotProduct(targetVector);
-    const determinant =
-      targetVector.y * referenceVector.z - targetVector.z * referenceVector.y;
+    const determinant = targetVector.y * referenceVector.z - targetVector.z * referenceVector.y;
 
-    // return Math.acos(dotProduct / (referenceVector.length * targetVector.length));
     return Math.atan2(determinant, dotProduct);
   }
 
@@ -85,9 +91,7 @@ export class Vector {
   }
 
   private move(direction: Vector, length: number) {
-    const xyLength = Math.sqrt(
-      direction.x * direction.x + direction.y * direction.y,
-    );
+    const xyLength = Math.sqrt(direction.x * direction.x + direction.y * direction.y);
 
     this.x += (direction.x / xyLength) * length;
     this.y += (direction.y / xyLength) * length;
@@ -96,9 +100,8 @@ export class Vector {
   private rotate(angleDeg: number) {
     const rotationAngleRad = deg2Rad(angleDeg);
 
-    this.x =
-      this.x * Math.cos(rotationAngleRad) - this.y * Math.sin(rotationAngleRad);
-    this.y =
-      this.x * Math.sin(rotationAngleRad) + this.y * Math.cos(rotationAngleRad);
+    this.x = this.x * Math.cos(rotationAngleRad) - this.y * Math.sin(rotationAngleRad);
+    this.y = this.x * Math.sin(rotationAngleRad) + this.y * Math.cos(rotationAngleRad);
   }
 }
+

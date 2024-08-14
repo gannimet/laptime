@@ -1,6 +1,6 @@
-import { GameState } from "./state";
-import { Vector } from "./vector";
-import { ON_BOARD_VIEW_CONFIG } from "./view-constants";
+import { GameState } from './state';
+import { Vector } from './vector';
+import { ON_BOARD_VIEW_CONFIG } from './view-constants';
 
 export type ProjectionCanvas = {
   width: number;
@@ -25,7 +25,7 @@ export function calculateProjectionForPoint(
   gameState: GameState,
   canvas: ProjectionCanvas,
 ) {
-  const { cameraAngularFieldOfViewHorizontal } = ON_BOARD_VIEW_CONFIG;
+  const { cameraAngularFieldOfViewHorizontal, cameraTiltDownAngle } = ON_BOARD_VIEW_CONFIG;
   const { cameraVector, carPosition } = gameState;
   const cameraToPointVector = carPosition.deltaTo(pointToRender);
 
@@ -39,7 +39,7 @@ export function calculateProjectionForPoint(
     return;
   }
 
-  const theta_v = cameraVector.verticalAngleTo(cameraToPointVector);
+  const theta_v = cameraToPointVector.verticalAngle + deg2Rad(cameraTiltDownAngle);
 
   if (Math.abs(theta_v) > fovHalf) {
     return;
@@ -61,3 +61,4 @@ export function calculateProjectionForPoint(
     y: projectionY,
   } as ProjectionPoint;
 }
+
