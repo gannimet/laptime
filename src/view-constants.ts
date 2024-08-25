@@ -3,16 +3,20 @@ export const ON_BOARD_VIEW_CONFIG = {
    * Degrees
    */
   cameraTiltDownAngle: 3,
+
   /**
    * Degrees
    */
-  cameraAngularFieldOfViewHorizontal: 120,
+  cameraAngularFieldOfViewHorizontal: 90,
+
   /**
    * Meters
    */
   cameraElevation: 1,
+
   /**
    * Meters
    */
-  renderDistance: 200,
+  trackWidth: 12,
 };
+

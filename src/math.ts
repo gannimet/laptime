@@ -30,9 +30,6 @@ export function calculateProjectionForPoint(
   const cameraToPointVector = carPosition.deltaTo(pointToRender);
 
   const fovHalf = deg2Rad(cameraAngularFieldOfViewHorizontal / 2);
-  const f = 1 / Math.tan(fovHalf);
-  const d_h = carPosition.horizontalDistanceTo(pointToRender);
-  const d_v = carPosition.verticalDistanceTo(pointToRender);
   const theta_h = cameraVector.horizontalAngleTo(cameraToPointVector);
 
   if (Math.abs(theta_h) > fovHalf) {
@@ -45,6 +42,9 @@ export function calculateProjectionForPoint(
     return;
   }
 
+  const f = 1 / Math.tan(fovHalf);
+  const d_h = carPosition.horizontalDistanceTo(pointToRender);
+  const d_v = carPosition.verticalDistanceTo(pointToRender);
   const a_h = d_h * Math.sin(theta_h);
   const a_v = d_v * Math.sin(theta_v);
   const b_h = Math.sqrt(Math.pow(d_h, 2) - Math.pow(a_h, 2));
@@ -53,7 +53,7 @@ export function calculateProjectionForPoint(
   const p_v = (f * a_v) / b_v;
   const halfCanvasWidth = canvas.width / 2;
   const halfCanvasHeight = canvas.height / 2;
-  const projectionX = halfCanvasWidth + p_h * halfCanvasWidth;
+  const projectionX = halfCanvasWidth * (1 + p_h);
   const projectionY = halfCanvasHeight + p_v * halfCanvasWidth;
 
   return {

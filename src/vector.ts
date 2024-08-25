@@ -1,4 +1,5 @@
 import { deg2Rad } from './math';
+import { ON_BOARD_VIEW_CONFIG } from './view-constants';
 
 export type Axis = 'x' | 'y' | 'z';
 
@@ -11,6 +12,10 @@ export class Vector {
 
   toString(): string {
     return `(${this.x}, ${this.y}, ${this.z})`;
+  }
+
+  add(other: Vector) {
+    return new Vector(this.x + other.x, this.y + other.y, this.z + other.z);
   }
 
   deltaTo(other: Vector): Vector {
@@ -42,23 +47,23 @@ export class Vector {
   }
 
   get verticalAngle() {
-    // Normal vector of xy plane
-    const normalVector = new Vector(0, 0, -1);
-    // Set x to zero to "unskew" and make points with same x appear parallel
+    /*
+     * In theory, we calculate the angle between the xy plane with its normal vector (0, 0, 1)
+     * and the vertically reduced cam2point-vector (with x set to 0). This would require the
+     * dot product of that normal vector and the vertically reduced vector, which always comes down
+     * to the z component of the cam2point vector, so we use that directly for simplicity
+     */
     const verticallyReducedVector = new Vector(0, this.y, this.z);
-    const dotProduct = verticallyReducedVector.dotProduct(normalVector);
 
-    return Math.asin(dotProduct / verticallyReducedVector.length);
+    return Math.sin(-this.z / verticallyReducedVector.length);
   }
 
   horizontalAngleTo(other: Vector) {
-    // For horizontal angle we set the z component of both vectors to 0
-    const referenceVector = new Vector(this.x, this.y, 0);
-    const targetVector = new Vector(other.x, other.y, 0);
-    const dotProduct = referenceVector.dotProduct(targetVector);
-    const determinant = targetVector.x * referenceVector.y - targetVector.y * referenceVector.x;
+    // Since we only care about the horizontal angle we ignore the z components
+    const referenceAngle = Math.atan2(this.y, this.x);
+    const targetAngle = Math.atan2(other.y, other.x);
 
-    return Math.atan2(determinant, dotProduct);
+    return referenceAngle - targetAngle;
   }
 
   /**
@@ -72,6 +77,14 @@ export class Vector {
     const determinant = targetVector.y * referenceVector.z - targetVector.z * referenceVector.y;
 
     return Math.atan2(determinant, dotProduct);
+  }
+
+  get horizontalNormalVectors() {
+    const { trackWidth } = ON_BOARD_VIEW_CONFIG;
+    const n_x = trackWidth / (2 * Math.sqrt(1 + (this.x * this.x) / (this.y * this.y)));
+    const n_y = -((this.x * n_x) / this.y);
+
+    return [new Vector(n_x, n_y, this.z), new Vector(-n_x, -n_y, this.z)];
   }
 
   forward(direction: Vector) {

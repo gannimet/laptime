@@ -1,6 +1,7 @@
 import { Graphics } from './graphics';
-import { setKeyPressed, setKeyUnpressed, updateState } from './state';
+import { currentState, setKeyPressed, setKeyUnpressed, updateState } from './state';
 import './style.css';
+import { loadTrack } from './track';
 import { Vector } from './vector';
 
 const canvas = document.querySelector<HTMLCanvasElement>('#laptimeCanvas');
@@ -32,11 +33,13 @@ function renderCurve() {
 }
 
 function renderHouse() {
-  const a = new Vector(4, 16, 0);
-  const b = new Vector(8, 16, 0);
-  const c = new Vector(4, 16, 4);
-  const d = new Vector(8, 16, 4);
-  const e = new Vector(6, 16, 6);
+  const xOffset = 10;
+
+  const a = new Vector(xOffset + 4, 16, 0);
+  const b = new Vector(xOffset + 8, 16, 0);
+  const c = new Vector(xOffset + 4, 16, 4);
+  const d = new Vector(xOffset + 8, 16, 4);
+  const e = new Vector(xOffset + 6, 16, 6);
 
   graphics.renderPoint(a, 'orange');
   graphics.renderPoint(b, 'orange');
@@ -51,11 +54,11 @@ function renderHouse() {
   graphics.renderLine(c, e, 'orange');
   graphics.renderLine(d, e, 'orange');
 
-  const f = new Vector(4, 20, 0);
-  const g = new Vector(8, 20, 0);
-  const h = new Vector(4, 20, 4);
-  const i = new Vector(8, 20, 4);
-  const j = new Vector(6, 20, 6);
+  const f = new Vector(xOffset + 4, 20, 0);
+  const g = new Vector(xOffset + 8, 20, 0);
+  const h = new Vector(xOffset + 4, 20, 4);
+  const i = new Vector(xOffset + 8, 20, 4);
+  const j = new Vector(xOffset + 6, 20, 6);
 
   graphics.renderPoint(f, 'orange');
   graphics.renderPoint(g, 'orange');
@@ -77,10 +80,56 @@ function renderHouse() {
   graphics.renderLine(e, j, 'orange');
 }
 
-function renderLines() {
+function renderXLines(color: string) {
   for (let z = -2; z <= 2; z++) {
+    let prev: Vector | undefined;
+
     for (let x = -30; x <= 30; x++) {
-      graphics.renderPoint(new Vector(x, 20, z), 'blue');
+      const curr = new Vector(x, 20, z);
+
+      graphics.renderPoint(curr, color);
+
+      if (prev) {
+        graphics.renderLine(prev, curr, color);
+      }
+
+      prev = curr;
+    }
+  }
+}
+
+function renderYLines(color: string) {
+  for (let x = -5; x <= 5; x++) {
+    let prev: Vector | undefined;
+
+    for (let y = 0; y <= 30; y++) {
+      const curr = new Vector(x, y, 0);
+
+      graphics.renderPoint(curr, color);
+
+      if (prev) {
+        graphics.renderLine(prev, curr, color);
+      }
+
+      prev = curr;
+    }
+  }
+}
+
+function renderZLines(color: string) {
+  for (let x = -10; x <= 10; x++) {
+    let prev: Vector | undefined;
+
+    for (let z = -2; z <= 10; z++) {
+      const curr = new Vector(x, 10, z);
+
+      graphics.renderPoint(curr, color);
+
+      if (prev) {
+        graphics.renderLine(prev, curr, color);
+      }
+
+      prev = curr;
     }
   }
 }
@@ -105,11 +154,13 @@ function draw(time: number) {
   ctx.drawImage(onboardCarImage, carX, carY);
 
   // View on track
-  renderCurve();
-  renderHouse();
-  // renderLines();
-  // graphics.renderPoint(new Vector(-15, 10, 3), 'blue');
-  // graphics.renderPoint(new Vector(0, 10, 3), 'blue');
+  graphics.renderCurrentTrackView();
+  // renderCurve();
+  // renderHouse();
+  // renderXLines('blue');
+  // renderYLines('green');
+  // renderZLines('red');
+  // graphics.renderPoint(new Vector(10, 30, 0), 'blue');
 }
 
 function run() {
@@ -136,6 +187,10 @@ window.addEventListener('load', () => {
   };
 
   onboardCarImage.src = 'onboard-car_green.svg';
+
+  loadTrack('testtrack').then((track) => {
+    currentState.track = track;
+  });
 });
 
 window.addEventListener('keydown', setKeyPressed);
