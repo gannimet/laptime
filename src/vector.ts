@@ -22,6 +22,12 @@ export class Vector {
     return new Vector(other.x - this.x, other.y - this.y, other.z - this.z);
   }
 
+  distanceTo(other: Vector) {
+    return Math.sqrt(
+      Math.pow(other.x - this.x, 2) + Math.pow(other.y - this.y, 2) + Math.pow(other.z - this.z, 2),
+    );
+  }
+
   horizontalDistanceTo(other: Vector) {
     return Math.sqrt(Math.pow(other.x - this.x, 2) + Math.pow(other.y - this.y, 2));
   }
@@ -48,14 +54,12 @@ export class Vector {
 
   get verticalAngle() {
     /*
-     * In theory, we calculate the angle between the xy plane with its normal vector (0, 0, 1)
-     * and the vertically reduced cam2point-vector (with x set to 0). This would require the
-     * dot product of that normal vector and the vertically reduced vector, which always comes down
-     * to the z component of the cam2point vector, so we use that directly for simplicity
+     * In theory, we calculate the angle between the xy plane by using its normal vector (0, 0, 1)
+     * and the cam2point vector. This would require the dot product of that normal vector and the
+     * cam2point vector, which always comes down to the z component of the cam2point vector, so we
+     * use that directly for simplicity
      */
-    const verticallyReducedVector = new Vector(0, this.y, this.z);
-
-    return Math.sin(-this.z / verticallyReducedVector.length);
+    return Math.sin(-this.z / this.length);
   }
 
   horizontalAngleTo(other: Vector) {

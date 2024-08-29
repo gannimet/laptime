@@ -151,12 +151,12 @@ function draw(time: number) {
   // Car
   const carX = (canvas.width - onboardCarImage.width) / 2;
   const carY = canvas.height - onboardCarImage.height;
-  ctx.drawImage(onboardCarImage, carX, carY);
+  // ctx.drawImage(onboardCarImage, carX, carY);
 
   // View on track
-  graphics.renderCurrentTrackView();
+  // graphics.renderCurrentTrackView();
   // renderCurve();
-  // renderHouse();
+  renderHouse();
   // renderXLines('blue');
   // renderYLines('green');
   // renderZLines('red');
@@ -186,7 +186,7 @@ window.addEventListener('load', () => {
     run();
   };
 
-  onboardCarImage.src = 'onboard-car_green.svg';
+  onboardCarImage.src = 'onboard-car_pink.svg';
 
   loadTrack('testtrack').then((track) => {
     currentState.track = track;

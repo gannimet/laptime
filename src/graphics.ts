@@ -50,6 +50,7 @@ export class Graphics {
 
       normalPoints.forEach((normalPoint) => {
         this.renderPoint(normalPoint, 'orange');
+        this.renderLine(point, normalPoint, 'orange');
       });
     });
   }
