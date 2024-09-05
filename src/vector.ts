@@ -1,4 +1,4 @@
-import { deg2Rad, rad2Deg } from './math';
+import { deg2Rad } from './math';
 import { ON_BOARD_VIEW_CONFIG } from './view-constants';
 
 export type Axis = 'x' | 'y' | 'z';
@@ -59,10 +59,15 @@ export class Vector {
   horizontalAngleTo(other: Vector) {
     const referenceAngle = Math.atan2(this.y, this.x);
     const targetAngle = Math.atan2(other.y, other.x);
-    console.log('---');
-    console.log('cam angle:', rad2Deg(referenceAngle));
-    console.log('cam2point angle:', rad2Deg(targetAngle));
-    console.log('net horiz angle:', rad2Deg(referenceAngle - targetAngle));
+    const bothFacingBackwards =
+      Math.abs(referenceAngle) > Math.PI / 2 && Math.abs(targetAngle) > Math.PI / 2;
+    const differingSigns = Math.sign(referenceAngle) !== Math.sign(targetAngle);
+
+    if (bothFacingBackwards && differingSigns) {
+      const angleBetween = Math.PI - Math.abs(referenceAngle) + (Math.PI - Math.abs(targetAngle));
+
+      return referenceAngle > 0 ? -angleBetween : angleBetween;
+    }
 
     return referenceAngle - targetAngle;
   }

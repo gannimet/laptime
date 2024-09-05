@@ -147,10 +147,10 @@ function draw(time: number) {
   graphics.renderHorizon();
 
   // View on track
-  // graphics.renderCurrentTrackView();
+  graphics.renderCurrentTrackView();
   // renderHouse();
-  graphics.renderPoint(new Vector(0, 10, 0), 'yellow');
-  graphics.renderPoint(new Vector(10, 10, 0), 'yellow');
+  // graphics.renderPoint(new Vector(0, 10, 0), 'yellow');
+  // graphics.renderPoint(new Vector(2, 10, 0), 'yellow');
 
   // Car
   const carX = (canvas.width - onboardCarImage.width) / 2;

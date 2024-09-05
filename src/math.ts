@@ -64,8 +64,13 @@ export function calculateProjectionForPoint(
 
 export function getHorizonHeight(canvas: ProjectionCanvas) {
   const baseHorizon = canvas.height / 2;
-  const { cameraTiltDownAngle } = ON_BOARD_VIEW_CONFIG;
+  const { cameraTiltDownAngle, cameraAngularFieldOfViewHorizontal } = ON_BOARD_VIEW_CONFIG;
 
-  return baseHorizon * (1 - Math.sin(deg2Rad(cameraTiltDownAngle)));
+  return (
+    baseHorizon *
+    (1 +
+      Math.sin(deg2Rad(-cameraTiltDownAngle)) /
+        Math.sin(deg2Rad(cameraAngularFieldOfViewHorizontal / 2)))
+  );
 }
 
