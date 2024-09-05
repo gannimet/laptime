@@ -32,13 +32,13 @@ export function calculateProjectionForPoint(
   const fovHalf = deg2Rad(cameraAngularFieldOfViewHorizontal / 2);
   const theta_h = cameraVector.horizontalAngleTo(cameraToPointVector);
 
-  if (Math.abs(theta_h) > fovHalf) {
+  if (Math.abs(theta_h) > deg2Rad(90)) {
     return;
   }
 
-  const theta_v = cameraToPointVector.verticalAngle + deg2Rad(cameraTiltDownAngle);
+  const theta_v = cameraToPointVector.verticalAngle - deg2Rad(cameraTiltDownAngle);
 
-  if (Math.abs(theta_v) > fovHalf) {
+  if (Math.abs(theta_v) > deg2Rad(90)) {
     return;
   }
 
@@ -60,5 +60,12 @@ export function calculateProjectionForPoint(
     x: projectionX,
     y: projectionY,
   } as ProjectionPoint;
+}
+
+export function getHorizonHeight(canvas: ProjectionCanvas) {
+  const baseHorizon = canvas.height / 2;
+  const { cameraTiltDownAngle } = ON_BOARD_VIEW_CONFIG;
+
+  return baseHorizon * (1 - Math.sin(deg2Rad(cameraTiltDownAngle)));
 }
 

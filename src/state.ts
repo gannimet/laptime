@@ -8,7 +8,7 @@ const allArrowKeys: string[] = ['ArrowRight', 'ArrowLeft', 'ArrowUp', 'ArrowDown
 
 const { cameraElevation, cameraTiltDownAngle } = ON_BOARD_VIEW_CONFIG;
 const cameraPosition = new Vector(0, 0, cameraElevation);
-const cameraTiltDownAngleRad = -deg2Rad(cameraTiltDownAngle);
+const cameraTiltDownAngleRad = deg2Rad(cameraTiltDownAngle);
 const rotationAngleRad = deg2Rad(0);
 const cameraVector = new Vector(
   -Math.sin(rotationAngleRad) * Math.cos(cameraTiltDownAngleRad),

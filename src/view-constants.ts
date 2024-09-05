@@ -17,6 +17,14 @@ export const ON_BOARD_VIEW_CONFIG = {
   /**
    * Meters
    */
-  trackWidth: 12,
+  trackWidth: 6,
+  /**
+   * Hex color
+   */
+  skyColor: '#37e3ff',
+  /**
+   * Hex color
+   */
+  floorColor: '#00be63',
 };
 

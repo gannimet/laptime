@@ -1,4 +1,4 @@
-import { deg2Rad } from './math';
+import { deg2Rad, rad2Deg } from './math';
 import { ON_BOARD_VIEW_CONFIG } from './view-constants';
 
 export type Axis = 'x' | 'y' | 'z';
@@ -53,34 +53,18 @@ export class Vector {
   }
 
   get verticalAngle() {
-    /*
-     * In theory, we calculate the angle between the xy plane by using its normal vector (0, 0, 1)
-     * and the cam2point vector. This would require the dot product of that normal vector and the
-     * cam2point vector, which always comes down to the z component of the cam2point vector, so we
-     * use that directly for simplicity
-     */
     return Math.sin(-this.z / this.length);
   }
 
   horizontalAngleTo(other: Vector) {
-    // Since we only care about the horizontal angle we ignore the z components
     const referenceAngle = Math.atan2(this.y, this.x);
     const targetAngle = Math.atan2(other.y, other.x);
+    console.log('---');
+    console.log('cam angle:', rad2Deg(referenceAngle));
+    console.log('cam2point angle:', rad2Deg(targetAngle));
+    console.log('net horiz angle:', rad2Deg(referenceAngle - targetAngle));
 
     return referenceAngle - targetAngle;
-  }
-
-  /**
-   * @deprecated
-   */
-  verticalAngleTo(other: Vector) {
-    // For vertical angle we set the x component of both vectors to 0
-    const referenceVector = new Vector(0, this.y, this.z);
-    const targetVector = new Vector(0, other.y, other.z);
-    const dotProduct = referenceVector.dotProduct(targetVector);
-    const determinant = targetVector.y * referenceVector.z - targetVector.z * referenceVector.y;
-
-    return Math.atan2(determinant, dotProduct);
   }
 
   get horizontalNormalVectors() {
