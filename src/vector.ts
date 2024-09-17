@@ -52,24 +52,14 @@ export class Vector {
     return Math.sqrt(this.x * this.x + this.y * this.y + this.z * this.z);
   }
 
-  get verticalAngle() {
-    return Math.sin(-this.z / this.length);
-  }
+  dimensionalAnglesTo(other: Vector) {
+    const horizontalAngle = this.horizontalAngleTo(other);
+    const verticalAngle = this.verticalAngleTo(other, horizontalAngle);
 
-  horizontalAngleTo(other: Vector) {
-    const referenceAngle = Math.atan2(this.y, this.x);
-    const targetAngle = Math.atan2(other.y, other.x);
-    const bothFacingBackwards =
-      Math.abs(referenceAngle) > Math.PI / 2 && Math.abs(targetAngle) > Math.PI / 2;
-    const differingSigns = Math.sign(referenceAngle) !== Math.sign(targetAngle);
-
-    if (bothFacingBackwards && differingSigns) {
-      const angleBetween = Math.PI - Math.abs(referenceAngle) + (Math.PI - Math.abs(targetAngle));
-
-      return referenceAngle > 0 ? -angleBetween : angleBetween;
-    }
-
-    return referenceAngle - targetAngle;
+    return {
+      theta_h: horizontalAngle,
+      theta_v: verticalAngle,
+    };
   }
 
   get horizontalNormalVectors() {
@@ -94,6 +84,31 @@ export class Vector {
 
   right() {
     this.rotate(-2);
+  }
+
+  private horizontalAngleTo(other: Vector) {
+    const referenceAngle = Math.atan2(this.y, this.x);
+    const targetAngle = Math.atan2(other.y, other.x);
+    const bothFacingBackwards =
+      Math.abs(referenceAngle) > Math.PI / 2 && Math.abs(targetAngle) > Math.PI / 2;
+    const differingSigns = Math.sign(referenceAngle) !== Math.sign(targetAngle);
+
+    if (bothFacingBackwards && differingSigns) {
+      const angleBetween = Math.PI - Math.abs(referenceAngle) + (Math.PI - Math.abs(targetAngle));
+
+      return referenceAngle > 0 ? -angleBetween : angleBetween;
+    }
+
+    return referenceAngle - targetAngle;
+  }
+
+  private verticalAngleTo(other: Vector, horizontalAngle: number) {
+    const { cameraTiltDownAngle } = ON_BOARD_VIEW_CONFIG;
+    const otherXYLength = Math.sqrt(other.x * other.x + other.y * other.y);
+    const oppositeAngle = Math.PI / 2 - horizontalAngle;
+    const projectionDepth = otherXYLength * Math.sin(oppositeAngle);
+
+    return -Math.atan2(other.z, projectionDepth) - deg2Rad(cameraTiltDownAngle);
   }
 
   private move(direction: Vector, length: number) {

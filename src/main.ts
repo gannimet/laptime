@@ -147,15 +147,16 @@ function draw(time: number) {
   graphics.renderHorizon();
 
   // View on track
-  graphics.renderCurrentTrackView();
+  // graphics.renderCurrentTrackView();
   // renderHouse();
-  // graphics.renderPoint(new Vector(0, 10, 0), 'yellow');
-  // graphics.renderPoint(new Vector(2, 10, 0), 'yellow');
+  renderXLines('yellow');
+  // renderYLines('yellow');
+  // graphics.renderPoint(new Vector(3, 10, 0), 'yellow', true);
 
   // Car
   const carX = (canvas.width - onboardCarImage.width) / 2;
   const carY = canvas.height - onboardCarImage.height;
-  ctx.drawImage(onboardCarImage, carX, carY);
+  // ctx.drawImage(onboardCarImage, carX, carY);
 }
 
 function run() {

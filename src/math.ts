@@ -30,13 +30,13 @@ export function calculateProjectionForPoint(
   const cameraToPointVector = carPosition.deltaTo(pointToRender);
 
   const fovHalf = deg2Rad(cameraAngularFieldOfViewHorizontal / 2);
-  const theta_h = cameraVector.horizontalAngleTo(cameraToPointVector);
+  const { theta_h, theta_v } = cameraVector.dimensionalAnglesTo(cameraToPointVector);
 
-  if (Math.abs(theta_h) > deg2Rad(90)) {
-    return;
-  }
+  // if (Math.abs(theta_h) > deg2Rad(90)) {
+  //   theta_h = Math.sign(theta_h) * deg2Rad(90);
+  // }
 
-  const theta_v = cameraToPointVector.verticalAngle - deg2Rad(cameraTiltDownAngle);
+  // let theta_v = cameraVector.verticalAngleTo(cameraToPointVector) - deg2Rad(cameraTiltDownAngle);
 
   if (Math.abs(theta_v) > deg2Rad(90)) {
     return;

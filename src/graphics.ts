@@ -23,7 +23,7 @@ export class Graphics {
     }
   }
 
-  renderPoint(pointToRender: Vector, color: string) {
+  renderPoint(pointToRender: Vector, color: string, withVLine = false) {
     const projectionPoint = calculateProjectionForPoint(pointToRender, currentState, this.canvas);
 
     if (!projectionPoint) {
@@ -32,6 +32,14 @@ export class Graphics {
 
     this.ctx.fillStyle = color;
     this.ctx.fillRect(projectionPoint.x - 4, projectionPoint.y - 4, 8, 8);
+
+    if (withVLine) {
+      this.renderLine(
+        pointToRender,
+        new Vector(-pointToRender.x, pointToRender.y, pointToRender.z),
+        color,
+      );
+    }
   }
 
   renderCurrentTrackView() {
@@ -41,18 +49,40 @@ export class Graphics {
       return;
     }
 
-    track.path.forEach((point, index) => {
-      this.renderPoint(point, 'blue');
+    let normalPointsFromBefore: Vector[];
 
+    track.path.forEach((point, index) => {
       const pointBefore = index > 0 ? track.path[index - 1] : track.path[track.path.length - 1];
       const dirVector = pointBefore.deltaTo(point);
       const normalVectors = dirVector.horizontalNormalVectors;
       const normalPoints = normalVectors.map((vector) => point.add(vector));
 
-      normalPoints.forEach((normalPoint) => {
-        this.renderPoint(normalPoint, 'yellow');
-        this.renderLine(point, normalPoint, 'yellow');
-      });
+      if (normalPointsFromBefore) {
+        const p1 = calculateProjectionForPoint(
+          normalPointsFromBefore[0],
+          currentState,
+          this.canvas,
+        );
+        const p2 = calculateProjectionForPoint(
+          normalPointsFromBefore[1],
+          currentState,
+          this.canvas,
+        );
+        const p3 = calculateProjectionForPoint(normalPoints[1], currentState, this.canvas);
+        const p4 = calculateProjectionForPoint(normalPoints[0], currentState, this.canvas);
+
+        if (p1 && p2 && p3 && p4) {
+          this.ctx.fillStyle = '#999';
+          this.ctx.beginPath();
+          this.ctx.moveTo(p1.x, p1.y);
+          this.ctx.lineTo(p2.x, p2.y);
+          this.ctx.lineTo(p3.x, p3.y);
+          this.ctx.lineTo(p4.x, p4.y);
+          this.ctx.fill();
+        }
+      }
+
+      normalPointsFromBefore = normalPoints;
     });
   }
 
